@@ -6,5 +6,5 @@
 // --------------------------------------------------------------------------
 
 // Vite 환경에서만 파일 확장자 생략이 가능하다.
-import './FP/chapters/00-programming-paradigm';
+import './FP/chapters/01-functional-principle';
 import './styles/main.css';
