@@ -178,43 +178,111 @@ function createCountUpButton(
 }
 
 // max에 도달하면 더이상 증가하지 않게 하기
-createCountUpButton(box, { max: 8 });
-createCountUpButton(box, { count: 2 });
-createCountUpButton(box, { count: 3, step: 2 });
+// createCountUpButton(box, { max: 8 });
+// createCountUpButton(box, { count: 2 });
+// createCountUpButton(box, { count: 3, step: 2 });
 
 // --------------------------------------------------------------------------
 // JavaScript 프로그래밍 패러다임
 // → 클래스(class)를 사용해 구현합니다. (참고: https://mzl.la/3QrTKlF)
 
 class CountUpButton {
-  #config;
+  // static field
+  static version = '0.0.1-alpha';
 
-  constructor(userOptions) {
-    this.#config = { ...CountUpButton.defaultProps, ...userOptions };
-    this.init();
-  }
-
-  init() {
-    console.log(this.#config);
-  }
-
+  // 기본 Props
   static defaultProps = {
     count: 0,
     step: 1,
+    max: 10,
   };
+
+  // private field
+  // must be declared
+  #count;
+  #props = {};
+  #button = null;
+
+  // 라이프 사이클 메서드
+  // 생성 시점(constructor)
+  constructor(props) {
+    console.log('생성 시점');
+    this.#count = props.count ?? 0;
+    this.#props = { ...CountUpButton.defaultProps, ...props }; // 사용자가 전달한 데이터와 기본 데이터가 병합
+  }
+
+  // render
+  render() {
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.textContent = String(this.#count);
+    this.#button = button;
+
+    this.bindEvents();
+
+    return button;
+  }
+
+  renderHTML() {
+    const template = /* html */ `
+    <button>${this.#count}</button>
+    `;
+
+    return template;
+  }
+
+  bindEvents() {
+    this.#button.addEventListener('click', e => {});
+  }
+
+  // mount
+  mount(container) {
+    console.log(this.#props);
+    container?.append?.(this.render());
+    // container?.insertAdjacentHTML?.('beforeend', this.renderHTML());
+  }
+
+  // 성장 시점(update)
+  // 소멸 시점(unmount)
+  unmount() {
+    console.log('소멸 시점');
+  }
 }
 
-globalThis.CountUpButton = CountUpButton;
-
+// 새로운 객체 생성
 const firstCountUp = new CountUpButton({
-  count: 2,
-  step: 7,
+  count: 1,
 });
+const secondCountUp = new CountUpButton({
+  count: 2,
+  step: 6,
+});
+const thirdCountUp = new CountUpButton({
+  count: 3,
+  max: 100,
+});
+
+globalThis.firstCountUp = firstCountUp;
+
+console.log(firstCountUp);
 
 const demoContainer = document.getElementById('demo');
 
-// demoContainer.append(firstCountUp.render())
+// firstCountUp.mount(demoContainer);
+// secondCountUp.mount(demoContainer);
+// thirdCountUp.mount(demoContainer);
 
 // --------------------------------------------------------------------------
 // 웹 컴포넌트(Web Components) API
 // → 웹 컴포넌트를 사용해 구현합니다. (참고: https://mzl.la/3YjFdu9)
+
+class TestHeader extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = /* html */ `
+    <header>이게 되나요</header>
+    `;
+  }
+}
+
+customElements.define('test-header', TestHeader);
